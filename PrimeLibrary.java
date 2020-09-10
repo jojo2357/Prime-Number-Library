@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger.*;
 import java.math.BigInteger;
 import java.util.Scanner;
 
@@ -14,7 +15,7 @@ Change all istances of <T extends Number> to <T> and <t extends Number> and remo
 if (!Number.class.isAssignableFrom(clazz))
 	throw new RuntimeException("Class " + clazz.getName() + " is not valid (must extend java.lang.Number)");
 */
-
+@SuppressWarnings("unchecked")
 public class PrimeLibrary<T extends Number> {
 
 	public T[] prime;
@@ -31,10 +32,43 @@ public class PrimeLibrary<T extends Number> {
 	public static final BigInteger ONE = new BigInteger("1");
 	public static final BigInteger ZERO = new BigInteger("0");
 
+	public <t extends Number> PrimeLibrary(final int size, final Class<t> clazz) throws IOException,
+			NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+		String DIR = DEFAULT_DIRECTORY;
+		if (!Number.class.isAssignableFrom(clazz))
+			throw new RuntimeException("Class " + clazz.getName() + " is not valid (must extend java.lang.Number)");
+
+		prime = (T[]) Array.newInstance(clazz, size + 1);
+
+		File primeFile = new File(DIR + "\\PrimeLibrary.csv");
+		if (!primeFile.exists())
+			buildLibrary(DIR, size);
+		Scanner primeFileParser = new Scanner(primeFile);
+		final Constructor<t> c = clazz.getConstructor(String.class);
+		int index = 0;
+		if (primeFileParser.hasNext()) {
+			String data = primeFileParser.next();
+			String[] dataIn = data.split(",");
+			if (dataIn.length < size) {// if it wasn't long enough, remake it and reread it
+				primeFileParser.close();
+				buildLibrary(DIR, size);
+				primeFile = new File(DIR + "\\PrimeLibrary.csv");
+				primeFileParser = new Scanner(primeFile);
+				dataIn = primeFileParser.next().split(",");
+			}
+			for (final String number : dataIn) {
+				if (index == prime.length)
+					break;
+				prime[index++] = (T) c.newInstance(number);
+			}
+		}
+		primeFileParser.close();
+	}
+
 	/*
 	 * Parses library data
 	 */
-	@SuppressWarnings("unchecked")
 	public <t extends Number> PrimeLibrary(String DIR, final int size, final Class<t> clazz)
 			throws NoSuchMethodException, SecurityException, IOException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -42,9 +76,6 @@ public class PrimeLibrary<T extends Number> {
 			throw new RuntimeException("Class " + clazz.getName() + " is not valid (must extend java.lang.Number)");
 
 		prime = (T[]) Array.newInstance(clazz, size + 1);
-
-		if (DIR.isEmpty())
-			DIR = DEFAULT_DIRECTORY;
 
 		File primeFile = new File(DIR + "\\PrimeLibrary.csv");
 		if (!primeFile.exists())
@@ -112,6 +143,7 @@ public class PrimeLibrary<T extends Number> {
 		primeWriter.close();
 	}
 
+	@Deprecated
 	public static <t extends Number> PrimeLibrary<t> buildAndReturnLibrary(final String DIR, final int length,
 			final Class<t> clazz) throws IOException, NoSuchMethodException, SecurityException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -132,7 +164,8 @@ public class PrimeLibrary<T extends Number> {
 		if (sum.mod(TWO).compareTo(ONE) != 0) {
 			return false;
 		}
-		final BigInteger goal = sum.sqrt().add(ONE);
+		double gole = sum.doubleValue();
+		final BigInteger goal = new BigInteger("" + Math.sqrt(gole));
 		for (BigInteger i = new BigInteger("3"); goal.compareTo(i) == 1; i = i.add(TWO)) {
 			if (sum.mod(i).compareTo(ZERO) == 0) {
 				return false;
