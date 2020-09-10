@@ -165,7 +165,7 @@ public class PrimeLibrary<T extends Number> {
 			return false;
 		}
 		double gole = sum.doubleValue();
-		final BigInteger goal = new BigInteger("" + Math.sqrt(gole));
+		final BigInteger goal = new BigInteger("" + Math.ceil(Math.sqrt(gole)));
 		for (BigInteger i = new BigInteger("3"); goal.compareTo(i) == 1; i = i.add(TWO)) {
 			if (sum.mod(i).compareTo(ZERO) == 0) {
 				return false;
