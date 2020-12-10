@@ -40,7 +40,7 @@ public class PrimeLibrary<T> {
 	 */
 
 	final public T[] prime;
-	public List<T> primeList;
+	private List<T> primeList;
 	// this is so that we can use the functions and consumers
 	private int index = 0;
 	private Scanner recycler;

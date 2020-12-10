@@ -14,7 +14,7 @@ class PrimeLibraryRunner{
 		System.out.println("Average time: " + ((System.currentTimeMillis() - timeIn) / (double)libSize) + "ms");
 		try{
 			System.out.println(lib.prime[80]);
-			System.out.println(lib.get(1080));
+			System.out.println(lib.getList().get(1080));
 			System.out.println(lib.prime[2080]);
 			System.out.println(lib.prime[3080]);
 			System.out.println(lib.prime[4080]);
