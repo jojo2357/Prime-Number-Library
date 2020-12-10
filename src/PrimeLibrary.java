@@ -28,17 +28,17 @@ public class PrimeLibrary<T extends Number> {
 
 	private static final String DEFAULT_DIRECTORY = System.getProperty("user.dir");
 
-	public static final BigInteger ELEVEN = new BigInteger("11");
-	public static final BigInteger SEVEN = new BigInteger("7");
-	public static final BigInteger SIX = new BigInteger("6");
-	public static final BigInteger FIVE = new BigInteger("5");
-	public static final BigInteger FOUR = new BigInteger("4");
-	public static final BigInteger THREE = new BigInteger("3");// Used in calculating big primes.
-	public static final BigInteger TWO = new BigInteger("2");// Better to only create one, and it can be used elsewhere!
-	public static final BigInteger ONE = new BigInteger("1");
-	public static final BigInteger ZERO = new BigInteger("0");
+	public static final BigInteger ELEVEN = BigInteger.valueOf(11);
+	public static final BigInteger SEVEN = BigInteger.valueOf(7);
+	public static final BigInteger SIX = BigInteger.valueOf(6);
+	public static final BigInteger FIVE = BigInteger.valueOf(5);
+	public static final BigInteger FOUR = BigInteger.valueOf(4);
+	public static final BigInteger THREE = BigInteger.valueOf(3);// Used in calculating big primes.
+	public static final BigInteger TWO = BigInteger.valueOf(2);// Better to only create one, and it can be used elsewhere!
+	public static final BigInteger ONE = BigInteger.valueOf(1);
+	public static final BigInteger ZERO = BigInteger.valueOf(0);
 
-	public <t extends Number> PrimeLibrary(final int size, final Class<t> clazz) throws IOException,
+	public PrimeLibrary(final int size, final Class<T> clazz) throws IOException,
 			NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		this(DEFAULT_DIRECTORY, size, clazz);
@@ -47,7 +47,7 @@ public class PrimeLibrary<T extends Number> {
 	/*
 	 * Parses library data
 	 */
-	public <t extends Number> PrimeLibrary(String DIR, final int size, final Class<t> clazz) throws NoSuchMethodException, SecurityException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public PrimeLibrary(String DIR, final int size, final Class<T> clazz) throws NoSuchMethodException, SecurityException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (size <= 0)
 			throw new IllegalStateException("Library size invalid");
 		if (DIR.isEmpty())
@@ -61,7 +61,7 @@ public class PrimeLibrary<T extends Number> {
 	/*
 	 * Generates and saves Primes in the CWD
 	 */
-	private <t extends Number> void buildLibrary(String DIR, final int length, final Constructor<t> c) throws IOException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	private void buildLibrary(String DIR, final int length, final Constructor<T> c) throws IOException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		final File primeFile = new File(DIR + "\\PrimeLibrary.csv");
 		int index = 0;
 		if (primeFile.exists()) {
