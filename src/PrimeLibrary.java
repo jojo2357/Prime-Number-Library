@@ -23,7 +23,7 @@ public class PrimeLibrary<T extends Number> {
 	/*
 	 * index 0 = 1 so if you think that 1 is trivial, just pretend it is
 	 * one-indexed. When inputting length, it makes an array of length + 1. ie. if
-	 * you want the 50th prime, you need length 50 and index 50 (prime[50])
+	 * you want the 50th prime, you need length = 50 and index 50 (prime[50])
 	 */
 
 	private static final String DEFAULT_DIRECTORY = System.getProperty("user.dir");
@@ -147,6 +147,7 @@ public class PrimeLibrary<T extends Number> {
 		}
 	}
 
+	//Keep those eyes moving nothing to see here
 	@Deprecated
 	public static <t extends Number> PrimeLibrary<t> buildAndReturnLibrary(final String DIR, final int length, final Class<t> clazz) throws IOException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		//buildLibrary(DIR, length);
@@ -157,16 +158,14 @@ public class PrimeLibrary<T extends Number> {
 	 * Nothing revolutionary. True = argument is prime
 	 */
 	private static boolean isPrime(final BigInteger sum) throws IllegalArgumentException {
-		/*if (sum.mod(ELEVEN).compareTo(ZERO) == 0) 
-			return false;*/
 		if (sum.mod(FIVE).compareTo(ZERO) == 0) 
 			return false;
 		if (sum.mod(SEVEN).compareTo(ZERO) == 0) 
 			return false;
 		final BigInteger goal = bsqrt(sum);
-		if (goal.multiply(goal).compareTo(sum) == 0)
+		if (goal.multiply(goal).compareTo(sum) == 0)//if perfect square, go home
 			return false;
-		for (BigInteger i = ELEVEN; /*i.multiply(i).compareTo(sum) <= 0*/ goal.compareTo(i) >= 0 && i.compareTo(sum) != 0; i = i.add(SIX)) 
+		for (BigInteger i = ELEVEN; goal.compareTo(i) >= 0 && i.compareTo(sum) != 0; i = i.add(SIX)) 
 			if (sum.mod(i).compareTo(ZERO) == 0 || sum.mod(i.add(TWO)).compareTo(ZERO) == 0) 
 				return false;
 		return true;
