@@ -38,6 +38,7 @@ public class PrimeLibrary<T extends Number> {
 	public static final BigInteger ONE = BigInteger.valueOf(1);
 	public static final BigInteger ZERO = BigInteger.valueOf(0);
 
+	//Some prep here, see buildLibrary for heavy lifting
 	public PrimeLibrary(final int size, final Class<T> clazz) throws IOException,
 			NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -45,7 +46,7 @@ public class PrimeLibrary<T extends Number> {
 	}
 
 	/*
-	 * Parses library data
+	 * Some prep here, see buildLibrary for heavy lifting
 	 */
 	public PrimeLibrary(String DIR, final int size, final Class<T> clazz) throws NoSuchMethodException, SecurityException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (size <= 0)
@@ -60,6 +61,9 @@ public class PrimeLibrary<T extends Number> {
 
 	/*
 	 * Generates and saves Primes in the CWD
+	 * If the library does not exist, it will be created
+	 * If the library is too large, it will simple read until filled
+	 * If the library is too small, it will recycle the old one to make the new one
 	 */
 	private void buildLibrary(String DIR, final int length, final Constructor<T> c) throws IOException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		final File primeFile = new File(DIR + "\\PrimeLibrary.csv");
@@ -147,11 +151,14 @@ public class PrimeLibrary<T extends Number> {
 		}
 	}
 
-	//Keep those eyes moving nothing to see here
-	@Deprecated
-	public static <t extends Number> PrimeLibrary<t> buildAndReturnLibrary(final String DIR, final int length, final Class<t> clazz) throws IOException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		//buildLibrary(DIR, length);
+	//This will make a new instance. for example: PrimeLibrary<Integer> lib = PrimeLibrary.createLibrary("", 50, Integer.class);
+	public static <t extends Number> PrimeLibrary<t> createLibrary(final String DIR, final int length, final Class<t> clazz) throws IOException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		return new PrimeLibrary<t>(DIR, length, clazz);
+	}
+
+	//This will make a new instance. for example: PrimeLibrary<Integer> lib = PrimeLibrary.createLibrary(50, Integer.class);
+	public static <t extends Number> PrimeLibrary<t> createLibrary(final int length, final Class<t> clazz) throws IOException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return new PrimeLibrary<t>(length, clazz);
 	}
 
 	/*

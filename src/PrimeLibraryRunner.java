@@ -7,7 +7,8 @@ class PrimeLibraryRunner{
 		final int libSize = Integer.parseInt(args[0]);
 		final long timeIn = System.currentTimeMillis();
 		//You can omit the second <BigInteger> but it gets verbose fast
-		PrimeLibrary<BigInteger> lib = new PrimeLibrary<BigInteger>(libSize, BigInteger.class);
+		//PrimeLibrary<BigInteger> lib = new PrimeLibrary<BigInteger>(libSize, BigInteger.class);
+		PrimeLibrary<BigInteger> lib = PrimeLibrary.createLibrary("", 50, BigInteger.class);
 		System.out.println("Results for lib of size " + libSize);
 		System.out.println("Runtime time: " + (System.currentTimeMillis() - timeIn) + "ms");
 		System.out.println("Average time: " + ((System.currentTimeMillis() - timeIn) / (double)libSize) + "ms");
