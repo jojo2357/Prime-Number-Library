@@ -46,7 +46,7 @@ public class PrimeLibrary<T> {
     private Scanner recycler;
 
     // Some prep here, see buildLibrary for heavy lifting
-    public PrimeLibrary(final int size, final Class<T> clazz) throws IllegalArgumentException {
+    public PrimeLibrary(final int size, final Class<T> clazz) throws IllegalArgumentException, RuntimeException {
         this(DEFAULT_DIRECTORY, size, clazz);
     }
 
@@ -54,7 +54,8 @@ public class PrimeLibrary<T> {
      * Some prep here, see buildLibrary for heavy lifting
      */
     @SuppressWarnings("unchecked")
-    public PrimeLibrary(String DIR, final int size, final Class<T> clazz) throws IllegalArgumentException {
+    public PrimeLibrary(String DIR, final int size, final Class<T> clazz)
+            throws IllegalArgumentException, RuntimeException {
         if (size <= 0)
             throw new IllegalArgumentException("Library size invalid");
         if (DIR.isEmpty())
@@ -73,12 +74,12 @@ public class PrimeLibrary<T> {
      * be created If the library is too large, it will simple read until filled If
      * the library is too small, it will recycle the old one to make the new one
      */
-    private void buildLibrary(String DIR, final int length, final Constructor<T> c) {
+    private void buildLibrary(String DIR, final int length, final Constructor<T> c) throws RuntimeException {
         final File primeFile = new File(DIR + "\\PrimeLibrary.csv");
         StringBuilder primeText = new StringBuilder();
         recycler = null;
 
-        // This is how we save data
+        // This is how we save data on exit
         Function<Boolean, Boolean> quitAndSave = (val) -> {
             try {
                 primeFile.createNewFile();
@@ -172,17 +173,17 @@ public class PrimeLibrary<T> {
         quitAndSave.apply(null);
     }
 
-    // This will make a new instance. for example: PrimeLibrary<Integer> lib =
-    // PrimeLibrary.createLibrary("", 50, Integer.class);
+    // This will make a new instance. for example: 
+    // PrimeLibrary<Integer> lib = PrimeLibrary.createLibrary("", 50, Integer.class);
     public static <t extends Number> PrimeLibrary<t> createLibrary(final String DIR, final int length,
-            final Class<t> clazz) throws IllegalArgumentException {
+            final Class<t> clazz) throws IllegalArgumentException, RuntimeException {
         return new PrimeLibrary<t>(DIR, length, clazz);
     }
 
-    // This will make a new instance. for example: PrimeLibrary<Integer> lib =
-    // PrimeLibrary.createLibrary(50, Integer.class);
+    // This will make a new instance. for example: 
+    //PrimeLibrary<Integer> lib = PrimeLibrary.createLibrary(50, Integer.class);
     public static <t extends Number> PrimeLibrary<t> createLibrary(final int length, final Class<t> clazz)
-            throws IllegalArgumentException {
+            throws IllegalArgumentException, RuntimeException {
         return new PrimeLibrary<t>(length, clazz);
     }
 
@@ -215,14 +216,22 @@ public class PrimeLibrary<T> {
     }
 
     /*
-     * Nothing revolutionary. True = argument is prime
+     * Nothing revolutionary. True = argument is prime.
+     * 
+     * Sum MUST NEVER BE COMPOSITE TO 2 or 3
      */
-    private static boolean isPrime(final BigInteger sum) {
+    private static boolean isPrime(final BigInteger sum) throws RuntimeException {
+        // Lets not calculate the square root O(n^2(log(n))) if we can help it
         if (sum.mod(FIVE).compareTo(ZERO) == 0)
             return false;
         if (sum.mod(SEVEN).compareTo(ZERO) == 0)
             return false;
-        final BigInteger goal = bsqrt(sum);
+        final BigInteger goal;
+        try {
+            goal = bsqrt(sum);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error calculating the square root! This should NEVER happen!");
+        }
         if (goal.multiply(goal).compareTo(sum) == 0)// if perfect square, go home
             return false;
         for (BigInteger i = ELEVEN; goal.compareTo(i) >= 0 && i.compareTo(sum) != 0; i = i.add(SIX))
@@ -234,7 +243,7 @@ public class PrimeLibrary<T> {
     // BigInteger has a native sqrt function is VS code but in command line no so
     // heres the manual one that will ensure the limiting factor is your computer's
     // specs
-    private static BigInteger bsqrt(final BigInteger x) {
+    private static BigInteger bsqrt(final BigInteger x) throws IllegalArgumentException {
         if (x.compareTo(BigInteger.ZERO) < 0)
             throw new IllegalArgumentException("Negative argument.");
         if (x == BigInteger.ZERO || x == BigInteger.ONE)
